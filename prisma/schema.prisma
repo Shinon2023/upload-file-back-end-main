@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  UserID      Int     @id @default(autoincrement())
+  Name        String
+  Prefix      String
+  Faculty     String
+  Course      String
+  Email       String  @unique
+  PhoneNumber String?
+  Password    String
+  Bio         String?
+  forms       Form[]
+  Role        Role
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model SubmitDate {
+  id      String   @id @default(uuid()) @db.Uuid
+  date    DateTime @db.Timestamp(0)
+  endDate DateTime @db.Timestamp(0)
+}
+
+// old
+// model Form {
+//   id         String       @id @default(uuid()) @db.Uuid
+//   level      Int
+//   fileName1  String
+//   fileName2  String
+//   fileName3  String
+//   fileName4  String
+//   fileName5  String
+//   userId     Int
+//   user       Users        @relation(fields: [userId], references: [UserID])
+//   submitDate DateTime     @default(now())
+//   UploadFile UploadFile[]
+// }
+
+model Form {
+  id         String       @id @default(uuid()) @db.Uuid
+  level      Int
+  userId     Int
+  user       Users        @relation(fields: [userId], references: [UserID])
+  submitDate DateTime     @default(now())
+  UploadFile UploadFile[]
+}
+
+model UploadFile {
+  id       String @id @default(uuid()) @db.Uuid
+  formId   String @db.Uuid
+  form     Form   @relation(fields: [formId], references: [id])
+  File     File[]
+}
+
+model File {
+  id           String     @id @default(uuid()) @db.Uuid
+  fileName     String
+  uploadFileId String     @db.Uuid
+  uploadFile   UploadFile @relation(fields: [uploadFileId], references: [id])
+}
+
+model Course {
+  CourseID   Int    @id @default(autoincrement())
+  CourseName String
+}
+
+model Faculty {
+  FacultyID   Int    @id @default(autoincrement())
+  FacultyName String
+}
