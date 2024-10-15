@@ -8,6 +8,8 @@ import { UploadsModule } from './domain/uploads/uploads.module';
 import { LoginModule as AdminLoginModule } from './domain/admin/login/login.module';
 import { RouterModule } from '@nestjs/core';
 import { FormsAdminModule } from './domain/admin/forms/forms.module';
+import { PdfUploadModule } from './pdf-upload/pdf-upload.module';
+
 
 const ROUTES = [
   {
@@ -36,6 +38,7 @@ const ROUTES = [
     AdminLoginModule,
     FormsAdminModule,
     RouterModule.register(ROUTES),
+    PdfUploadModule,
   ],
 })
 export class AppModule {}
